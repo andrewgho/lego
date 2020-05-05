@@ -21,46 +21,15 @@ module tile_1x1() {
 }
 
 module plate_1x1() {
-  difference() {
-    cube([u(5), u(5), u(2)]);
-    union() {
-      epsilon = 0.1;
-      translate([u, u, -epsilon]) cube([u(3), u(3), u + epsilon]);
-      translate([u(5) / 2, u(5) / 2, u - epsilon])
-        cylinder(d = u, h = u + epsilon);
-    }
-  }
-  translate([u(5) / 2, u(5) / 2, u(2)]) stud();
+  beam(1, h = u(2));
 }
 
 module brick_1x1() {
-  difference() {
-    cube([u(5), u(5), u(6)]);
-    union() {
-      epsilon = 0.1;
-      translate([u, u, -epsilon]) cube([u(3), u(3), u(5) + epsilon]);
-      translate([u(5) / 2, u(5) / 2, u(5) - epsilon])
-        cylinder(d = u, h = u + epsilon);
-    }
-  }
-  translate([u(5) / 2, u(5) / 2, u(6)]) stud();
+  beam(1);
 }
 
 module brick_2x1() {
-  difference() {
-    cube([u(10), u(5), u(6)]);
-    union() {
-      epsilon = 0.1;
-      translate([u, u, -epsilon]) cube([u(8), u(3), u(5) + epsilon]);
-      translate([u(5) / 2, u(5) / 2, u(5) - epsilon])
-        cylinder(d = u, h = u + epsilon);
-      translate([u(10) - (u(5) / 2), u(5) / 2, u(5) - epsilon])
-        cylinder(d = u, h = u + epsilon);
-    }
-  }
-  translate([u(5) / 2, u(5) / 2, u(6)]) stud();
-  translate([u(10) / 2, u(5) / 2, 0]) cylinder(d = u(2), h = u(6));
-  translate([u(10) - (u(5) / 2), u(5) / 2, u(6)]) stud();
+  beam(2);
 }
 
 module beam(n, h = u(6)) {
