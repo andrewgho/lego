@@ -99,34 +99,7 @@ module brick(w, d, h = u(6)) {
 }
 
 module beam(n, h = u(6)) {
-  w = u(5);  // absolute width in mm
-  e = 0.1;   // small epsilon overlap to help rendering
-  difference() {
-    union() {
-      // Basic rectangular solid
-      cube([n * w, w, h]);
-      // Studs on top
-      for(i = [0 : n - 1]) {
-        translate([(i * w) + (w / 2), w / 2, h]) stud();
-      }
-    }
-    union() {
-      // Interior cavity
-      translate([u, u, -e])
-        cube([(n * w) - u(2), w - u(2), (h - u) + e]);
-      // Interior dimples underneath studs
-      for(i = [0 : n - 1]) {
-        translate([(i * w) + (w / 2), w / 2, (h - u) - e])
-          cylinder(d = u(1.5), h = u + e);
-      }
-    }
-  }
-  // Posts on bottom
-  if (n > 1) {
-    for(i = [0 : n - 2]) {
-      translate([(i * w) + w, w / 2, 0]) cylinder(d = u(2), h = h);
-    }
-  }
+  brick(n, 1, h);
 }
 
 for (i = [1 : 4]) {
