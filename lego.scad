@@ -8,18 +8,8 @@ $fn = 32;
 u = 1.6;
 function u(n) = u * n;
 
-module stud() {
-  cylinder(d = u(3), h = u, center = true);
-}
-
 module tile_1x1() {
-  difference() {
-    cube([u(5), u(5), u(2)]);
-    union() {
-      epsilon = 0.1;
-      translate([u, u, -epsilon]) cube([u(3), u(3), u + epsilon]);
-    }
-  }
+  brick(1, 1, h = u(2), studs = false);
 }
 
 module plate_1x1() {
@@ -34,7 +24,7 @@ module brick_2x1() {
   beam(2);
 }
 
-module brick(w, d, h = u(6)) {
+module brick(w, d, h = u(6), studs = true) {
   aw = w * u(5);  // absolute width in mm
   ad = d * u(5);  // absolute depth in mm
   e = 0.1;        // small epsilon overlap to help rendering
@@ -42,27 +32,32 @@ module brick(w, d, h = u(6)) {
     union() {
       // Basic rectangular solid
       cube([aw, ad, h]);
-      // Studs on top
-      for(x = [0 : w - 1]) {
-        for(y = [0 : d - 1]) {
-          ax = x * u(5);
-          ay = y * u(5);
-          half = u(5) / 2;
-          translate([ax + half, ay + half, h]) stud();
+      if (studs) {
+        // Studs on top
+        for(x = [0 : w - 1]) {
+          for(y = [0 : d - 1]) {
+            ax = x * u(5);
+            ay = y * u(5);
+            half = u(5) / 2;
+            translate([ax + half, ay + half, h])
+              cylinder(d = u(3), h = u, center = true);
+          }
         }
       }
     }
     union() {
       // Interior cavity
       translate([u, u, -e]) cube([aw - u(2), ad - u(2), (h - u) + e]);
-      // Interior dimples underneath studs
-      for(x = [0 : w - 1]) {
-        for(y = [0 : d - 1]) {
-          ax = x * u(5);
-          ay = y * u(5);
-          half = u(5) / 2;
-          translate([ax + half, ay + half, (h - u) - e])
-            cylinder(d = u(1.5), h = u + e);
+      if (studs) {
+        // Interior dimples underneath studs
+        for(x = [0 : w - 1]) {
+          for(y = [0 : d - 1]) {
+            ax = x * u(5);
+            ay = y * u(5);
+            half = u(5) / 2;
+            translate([ax + half, ay + half, (h - u) - e])
+              cylinder(d = u(1.5), h = u + e);
+          }
         }
       }
     }
