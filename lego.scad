@@ -4,9 +4,6 @@
 // 1 Lego Unit = 1.6mm
 u = 1.6;
 
-// Helper function to make expressions with units less verbose
-function u(n) = u * n;
-
 // Other useful dimensions
 stud_height = u;
 brick_height = u(6);
@@ -14,11 +11,15 @@ plate_height = brick_height / 3;
 unit_width = u(5);
 half_width = unit_width / 2;
 
+// Helper functions to make expressions with units less verbose
+function u(n) = u * n;
+function unit_width(n) = unit_width * n;
+
 // Create a brick with given dimensions
 module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = true) {
-  aw = width * u(5);  // absolute width in mm
-  ad = depth * u(5);  // absolute depth in mm
-  e = 0.1;        // small epsilon overlap to help rendering
+  aw = unit_width(width);  // absolute width in mm
+  ad = unit_width(depth);  // absolute depth in mm
+  e = 0.1;                 // small epsilon overlap to help rendering
 
   // Rectangular shell with interior cavity
   module shell() {
@@ -34,12 +35,12 @@ module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = 
       // Large hollow posts nestled underneath groups of four studs
       for(x = [0 : width - 2]) {
         for(y = [0 : depth - 2]) {
-          ax = x * u(5);
-          ay = y * u(5);
+          ax = unit_width(x);
+          ay = unit_width(y);
           if (width > 1 && depth > 1) {
             od = ((5 * sqrt(2)) - 3) * u;
             id = 4.80;
-            translate([ax + u(5), ay + u(5), 0]) {
+            translate([ax + unit_width, ay + unit_width, 0]) {
               difference() {
                 cylinder(d = od, h = height);
                 translate([0, 0, -e]) cylinder(d = id, h = height + e);
@@ -51,13 +52,13 @@ module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = 
     } else if (width > 1) {
       // Small solid posts between two linearly contiguous studs (x-axis)
       for(x = [0 : width - 2]) {
-        translate([(x * u(5)) + u(5), u(5) / 2, 0])
+        translate([unit_width(x + 1), half_width, 0])
           cylinder(d = u(2), h = height);
       }
     } else if (depth > 1) {
       // Small solid posts between two linearly contiguous studs (y-axis)
       for(y = [0 : depth - 2]) {
-        translate([u(5) / 2, (y * u(5)) + u(5), 0])
+        translate([half_width, unit_width(y + 1), 0])
           cylinder(d = u(2), h = height);
       }
     }
@@ -67,9 +68,9 @@ module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = 
   module studs() {
     for(x = [0 : width - 1]) {
       for(y = [0 : depth - 1]) {
-        ax = x * u(5);
-        ay = y * u(5);
-        translate([ax + (u(5) / 2), ay + (u(5) / 2), height])
+        ax = unit_width(x);
+        ay = unit_width(y);
+        translate([ax + half_width, ay + half_width, height])
           cylinder(d = u(3), h = stud_height, center = true);
       }
     }
@@ -79,9 +80,9 @@ module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = 
   module stud_dimples() {
     for(x = [0 : width - 1]) {
       for(y = [0 : depth - 1]) {
-        ax = x * u(5);
-        ay = y * u(5);
-        translate([ax + (u(5) / 2), ay + (u(5) / 2), (height - u) - e])
+        ax = unit_width(x);
+        ay = unit_width(y);
+        translate([ax + half_width, ay + half_width, (height - u) - e])
           cylinder(d = u(1.5), h = u + e);
       }
     }
@@ -107,9 +108,32 @@ module plate(width, depth, studs = true, posts = true) {
 }
 
 // Create a tile with given dimensions
-module tile(width, depth, posts = undef) {
+module tile(width, depth, posts = undef, groove = true) {
+  // Special case of 1x2 tile has no post, larger tiles have posts
   function set_default(p) = posts == undef ?
     !((width == 2 && depth == 1) || (width == 1 && depth == 2)) : posts;
-  plate(width, depth, studs = false, posts = set_default(posts));
-  // TODO: add tiny bottom bevels around edge
+
+  // Cutouts for grooves around edges
+  // https://rebrickable.com/parts/3069a/tile-1-x-2-without-groove/
+  module grooves(width, depth) {
+    aw = unit_width(width);  // absolute width in mm
+    ad = unit_width(depth);  // absolute depth in mm
+    gw = 0.25;               // groove width
+    e = 0.1;                 // small epsilon overlap to help rendering
+    translate([-e, -e, -e]) {
+      cube([e + aw + e, e + gw, e + gw]);
+      cube([e + gw, e + ad + e, e + gw]);
+    }
+    translate([-e, ad - gw, -e]) cube([e + aw + e, e + gw, e + gw]);
+    translate([aw - gw, -e, -e]) cube([e + gw, e + ad + e, e + gw]);
+  }
+
+  if (groove) {
+    difference() {
+      plate(width, depth, studs = false, posts = set_default(posts));
+      grooves(width, depth);
+    }
+  } else {
+    plate(width, depth, studs = false, posts = set_default(posts));
+  }
 }

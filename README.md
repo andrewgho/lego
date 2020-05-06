@@ -64,15 +64,18 @@ Parameters:
 ### tile
 
 Create a tile with given dimensions. A tile is a plate without studs on top.
+Modern tiles also have a groove along the bottom edges to facilitate easier
+removal.
 
 ```
-tile(width, depth, posts = true/false);
+tile(width, depth, posts = true/false, groove = true/false);
 ```
 
 Parameters:
 
 *   width, depth - dimensions of the plate, measured in studs.
-*   posts - if true, include interior posts.
+*   posts - if true (default except as noted below), include interior posts.
+*   groove - if true (default), include a groove around the bottom edges.
 
 Interior posts are included by default, except for the special case of a 2x1 (or
 1x2) tile, which has no interior post by default.
@@ -82,6 +85,7 @@ Interior posts are included by default, except for the special case of a 2x1 (or
 *   https://bricks.stackexchange.com/questions/288/what-are-the-dimensions-of-a-lego-brick
 *   https://www.bartneck.de/2019/04/21/lego-brick-dimensions-and-measurements/
 *   http://www.robertcailliau.eu/en/Alphabetical/L/Lego/Dimensions/General%20Considerations/
+*   https://rebrickable.com/parts/3069a/tile-1-x-2-without-groove/
 
 ## Author
 
