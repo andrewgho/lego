@@ -1,37 +1,19 @@
-// https://bricks.stackexchange.com/questions/288/what-are-the-dimensions-of-a-lego-brick
-// https://www.bartneck.de/2019/04/21/lego-brick-dimensions-and-measurements/
-// http://www.robertcailliau.eu/en/Alphabetical/L/Lego/Dimensions/General%20Considerations/
+// lego.scad - OpenSCAD models for LEGO bricks
 
 // 1 Lego Unit = 1.6mm
 u = 1.6;
+
+// Helper function to make expressions with units less verbose
 function u(n) = u * n;
 
+// Other useful dimensions
 stud_height = u;
 brick_height = u(6);
 plate_height = brick_height / 3;
-tile_height = plate_height;
 unit_width = u(5);
 half_width = unit_width / 2;
 
-/*
-
-brick
------
-
-Create a brick with given dimensions.
-
-```
-brick(width, depth, height, studs = true/false, posts = true/false);
-```
-
-Parameters:
-
-* width, depth - dimensions of the brick, measured in studs.
-* height - absolute height of the brick without studs, measured in mm.
-* studs - if true (default), include studs on top and dimples underneath them.
-* posts - if true (default), include interior posts.
-
-*/
+// Create a brick with given dimensions
 module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = true) {
   aw = width * u(5);  // absolute width in mm
   ad = depth * u(5);  // absolute depth in mm
@@ -118,48 +100,12 @@ module brick(width = 4, depth = 2, height = brick_height, studs = true, posts = 
   }
 }
 
-/*
-
-plate
------
-
-Create a plate with given dimensions. A plate is a brick of one third height.
-
-```
-plate(width, depth, studs = true/false, posts = true/false);
-```
-
-Parameters:
-
-* width, depth - dimensions of the plate, measured in studs.
-* studs - if true (default), include studs on top and dimples underneath them.
-* posts - if true (default), include interior posts.
-
-*/
+// Create a plate with given dimensions
 module plate(width, depth, studs = true, posts = true) {
   brick(width, depth, height = plate_height, studs = studs, posts = posts);
 }
 
-/*
-
-tile
-----
-
-Create a tile with given dimensions. A tile is a plate without studs on top.
-
-```
-tile(width, depth, posts = true/false);
-```
-
-Parameters:
-
-* width, depth - dimensions of the plate, measured in studs.
-* posts - if true, include interior posts.
-
-Interior posts are included by default, except for the special case of a 2x1
-(or 1x2) tile, which has no interior post by default.
-
-*/
+// Create a tile with given dimensions
 module tile(width, depth, posts = undef) {
   function set_default(p) = posts == undef ?
     !((width == 2 && depth == 1) || (width == 1 && depth == 2)) : posts;
@@ -167,8 +113,9 @@ module tile(width, depth, posts = undef) {
   // TODO: add tiny bottom bevels around edge
 }
 
-$fn = 32;
+// Demonstrate library capabilities
 
+$fn = 32;
 gap_height = brick_height;
 
 plate(8, 8);
