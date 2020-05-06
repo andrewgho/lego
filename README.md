@@ -32,7 +32,7 @@ These are useful for positioning bricks in a model.
 
 ## Modules
 
-=== brick
+### brick
 
 Create a brick with given dimensions.
 
@@ -47,7 +47,7 @@ Parameters:
 *   studs - if true (default), include studs on top and dimples underneath them.
 *   posts - if true (default), include interior posts.
 
-=== plate
+### plate
 
 Create a plate with given dimensions. A plate is a brick of one third height.
 
@@ -61,7 +61,7 @@ Parameters:
 *   studs - if true (default), include studs on top and dimples underneath them.
 *   posts - if true (default), include interior posts.
 
-## tile
+### tile
 
 Create a tile with given dimensions. A tile is a plate without studs on top.
 
