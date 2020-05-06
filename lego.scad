@@ -1,4 +1,5 @@
 // lego.scad - OpenSCAD models for LEGO bricks
+// Andrew Ho (andrew@zeuscat.com)
 
 // 1 Lego Unit = 1.6mm
 u = 1.6;
@@ -111,35 +112,4 @@ module tile(width, depth, posts = undef) {
     !((width == 2 && depth == 1) || (width == 1 && depth == 2)) : posts;
   plate(width, depth, studs = false, posts = set_default(posts));
   // TODO: add tiny bottom bevels around edge
-}
-
-// Demonstrate library capabilities
-
-$fn = 32;
-gap_height = brick_height;
-
-plate(8, 8);
-translate([0, 0, plate_height + gap_height]) {
-  brick(2, 2);
-  translate([unit_width * 3, 0, 0]) brick(1, 2);
-  translate([0, u(12), 0]) brick(4, 2);
-  translate([0, u(24), 0]) brick(4, 1);
-  translate([0, u(31), 0]) brick(1, 4);
-  translate([u(10), u(31), 0]) brick(2, 3);
-  translate([0, 0, brick_height + gap_height]) {
-    plate(2, 2);
-    translate([unit_width * 3, 0, 0]) plate(1, 2);
-    translate([0, u(12), 0]) plate(4, 2);
-    translate([0, u(24), 0]) plate(4, 1);
-    translate([0, u(31), 0]) plate(1, 4);
-    translate([u(10), u(31), 0]) plate(2, 3);
-    translate([0, 0, plate_height + gap_height]) {
-      tile(2, 2, posts = true);
-      translate([unit_width * 3, 0, 0]) tile(1, 2);
-      translate([0, u(12), 0]) tile(4, 2);
-      translate([0, u(24), 0]) tile(4, 1);
-      translate([0, u(31), 0]) tile(1, 4);
-      translate([u(10), u(31), 0]) tile(2, 3);
-    }
-  }
 }
