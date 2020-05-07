@@ -49,7 +49,7 @@ brick(width, depth, height, studs = true/false, posts = true/false);
 Parameters:
 
 *   width, depth - dimensions of the brick, measured in studs.
-*   height - absolute height of the brick without studs, measured in mm.
+*   height - absolute height in mm of brick without studs (default 5 units).
 *   studs - if true (default), include studs on top and dimples underneath them.
 *   posts - if true (default), include interior posts.
 
